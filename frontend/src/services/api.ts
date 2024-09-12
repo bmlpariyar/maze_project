@@ -38,7 +38,8 @@ export const solveMaze = async (
   maze: Maze,
   algorithm: SolvingAlgorithm
 ): Promise<{
-  maze: Solution;
+  steps: any[];
+  solution: Solution;
   time_complexity: string;
   space_complexity: string;
 }> => {
@@ -49,7 +50,8 @@ export const solveMaze = async (
     });
     console.log(response);
     return {
-      maze: response.data.solution,
+      steps: response.data.steps,
+      solution: response.data.solution,
       time_complexity: response.data.time_complexity,
       space_complexity: response.data.space_complexity,
     };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import MazeGrid from "./MazeGrid";
 import ControlPanel from "./ControlPanel";
 import { generateMaze, solveMaze } from "../services/api";
@@ -16,6 +16,11 @@ const MazeVisualizer: React.FC = () => {
   const [isSolving, setIsSolving] = useState(false);
   const [timeComplexity, setTimeComplexity] = useState<string>("");
   const [spaceComplexity, setSpaceComplexity] = useState<string>("");
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [solvingSteps, setSolvingSteps] = useState<any[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isSolutionReached, setIsSolutionReached] = useState(false);
+  const animationRef = useRef<number>();
 
   const handleGenerateMaze = async (
     width: number,
@@ -29,6 +34,9 @@ const MazeVisualizer: React.FC = () => {
       setSolution([]);
       setTimeComplexity(newMaze.time_complexity);
       setSpaceComplexity(newMaze.space_complexity);
+      setSolvingSteps([]);
+      setCurrentStep(0);
+      setIsSolutionReached(false);
     } catch (error) {
       console.error("Error generating maze:", error);
     }
@@ -38,14 +46,44 @@ const MazeVisualizer: React.FC = () => {
   const handleSolveMaze = async (algorithm: SolvingAlgorithm) => {
     setIsSolving(true);
     try {
-      const newSolution = await solveMaze(maze, algorithm);
-      setSolution(newSolution.maze);
-      setTimeComplexity(newSolution.time_complexity);
-      setSpaceComplexity(newSolution.space_complexity);
+      const result = await solveMaze(maze, algorithm);
+      setSolvingSteps(result.steps);
+      setSolution(result.solution);
+      setTimeComplexity(result.time_complexity);
+      setSpaceComplexity(result.space_complexity);
+      setCurrentStep(0);
+      setIsSolutionReached(false);
     } catch (error) {
       console.error("Error solving maze:", error);
     }
     setIsSolving(false);
+  };
+
+  const animate = useCallback(() => {
+    if (currentStep < solvingSteps.length - 1 && !isSolutionReached) {
+      setCurrentStep((prev) => prev + 1);
+      if (solvingSteps[currentStep + 1].type === "solution") {
+        setIsSolutionReached(true);
+        setIsAnimating(false);
+      } else {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    } else {
+      setIsAnimating(false);
+    }
+  }, [currentStep, solvingSteps, isSolutionReached]);
+
+  useEffect(() => {
+    if (isAnimating) {
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      cancelAnimationFrame(animationRef.current!);
+    }
+    return () => cancelAnimationFrame(animationRef.current!);
+  }, [isAnimating, animate]);
+
+  const toggleAnimation = () => {
+    setIsAnimating((prev) => !prev);
   };
 
   return (
@@ -57,8 +95,19 @@ const MazeVisualizer: React.FC = () => {
         isSolving={isSolving}
         spaceComplexity={spaceComplexity}
         timeComplexity={timeComplexity}
+        onToggleAnimation={toggleAnimation}
+        isAnimating={isAnimating}
+        isSolutionReached={isSolutionReached}
       />
-      <MazeGrid maze={maze} solution={solution} />
+      <div className="flex flex-col mt-10 items-center justify-center">
+        Step: {currentStep + 1} / {solvingSteps.length}
+      </div>
+      <MazeGrid
+        maze={maze}
+        solution={solution}
+        currentStep={solvingSteps[currentStep]}
+        isSolutionReached={isSolutionReached}
+      />
     </div>
   );
 };

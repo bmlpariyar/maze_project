@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from maze.generator import generate_maze
-from maze.solver import solve_maze
 from pydantic import BaseModel
+from typing import List, Tuple
+import time
+import sys
 
 app = FastAPI()
 
@@ -20,8 +22,27 @@ class MazeRequest(BaseModel):
     algorithm: str
 
 class SolveRequest(BaseModel):
-    maze: list
+    maze: List[List[int]]
     algorithm: str
+
+def solve_maze(maze, algorithm):
+    # Import the appropriate solving function based on the algorithm
+    if algorithm == 'depthFirstSearch':
+        from maze.solver import depth_first_search as solve_func
+    elif algorithm == 'breadthFirstSearch':
+        from maze.solver import breadth_first_search as solve_func
+    elif algorithm == 'aStar':
+        from maze.solver import a_star as solve_func
+    else:
+        raise ValueError(f"Unknown algorithm: {algorithm}")
+    
+    # Run the solver and collect all steps
+    steps = list(solve_func(maze))
+    
+    # Extract the final solution (if any) from the last step
+    solution = next((step['path'] for step in reversed(steps) if step['type'] == 'solution'), None)
+    
+    return steps, solution
 
 @app.post("/generate_maze")
 async def api_generate_maze(request: MazeRequest):
@@ -38,11 +59,16 @@ async def api_generate_maze(request: MazeRequest):
 @app.post("/solve_maze")
 async def api_solve_maze(request: SolveRequest):
     try:
-        solution, time_complexity, space_complexity = solve_maze(request.maze, request.algorithm)
+        start_time = time.time()
+        steps, solution = solve_maze(request.maze, request.algorithm)
+        time_taken = time.time() - start_time
+        space_used = sys.getsizeof(steps) + sys.getsizeof(solution)
+        
         return {
+            "steps": steps,
             "solution": solution,
-            "time_complexity": f"{time_complexity:.6f}",
-            "space_complexity": f"{space_complexity}"
+            "time_complexity": f"{time_taken:.6f}",
+            "space_complexity": f"{space_used}"
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

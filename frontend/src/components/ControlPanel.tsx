@@ -13,6 +13,9 @@ interface ControlPanelProps {
   isSolving: boolean;
   timeComplexity: string;
   spaceComplexity: string;
+  onToggleAnimation: () => void;
+  isAnimating: boolean;
+  isSolutionReached: boolean;
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -22,6 +25,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   isSolving,
   timeComplexity,
   spaceComplexity,
+  onToggleAnimation,
+  isAnimating,
 }) => {
   const [width, setWidth] = useState(50);
   const [height, setHeight] = useState(30);
@@ -92,6 +97,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       </div>
       <button onClick={handleSolve} disabled={isSolving}>
         {isSolving ? "Solving..." : "Solve Maze"}
+      </button>
+      <button onClick={onToggleAnimation} disabled={isSolving || isGenerating}>
+        {isAnimating ? "Pause Animation" : "Start Animation"}
       </button>
       <AlgoVisualizer time={timeComplexity} space={spaceComplexity} />
     </div>
