@@ -1,5 +1,5 @@
 
-import random
+import random,sys,time
 
 class DisjointSet:
     def __init__(self, size):
@@ -28,6 +28,8 @@ def kruskals_algorithm(width, height, dead_end_count=15):
     width = width if width % 2 == 1 else width + 1
     height = height if height % 2 == 1 else height + 1
     
+
+    start_time = time.time()
     # Initialize the maze with all walls
     maze = [[1 for _ in range(width)] for _ in range(height)]
     
@@ -92,5 +94,9 @@ def kruskals_algorithm(width, height, dead_end_count=15):
     # Ensure single entrance and exit
     maze[0][1] = 0  # Entrance
     maze[height - 1][width - 2] = 0  # Exit
+
+
+    generation_time = time.time() - start_time
+    maze_size = sys.getsizeof(maze)
     
-    return maze
+    return maze,generation_time,maze_size

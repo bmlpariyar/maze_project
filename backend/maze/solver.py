@@ -1,5 +1,6 @@
 from collections import deque
 import heapq
+import sys, time
 
 def solve_maze(maze, algorithm):
     if algorithm == 'depthFirstSearch':
@@ -14,29 +15,34 @@ def solve_maze(maze, algorithm):
 
 def depth_first_search(maze):
     height, width = len(maze), len(maze[0])
-    start = (1, 0)  # Entrance coordinates
-    end = (width - 2, height - 1)  # Exit coordinates
-    
+    start = (1, 0)
+    end = (width - 2, height - 1)
+
+    start_time = time.time()    
     stack = [(start, [start])]
     visited = set()
     
     while stack:
         (x, y), path = stack.pop()
         if (x, y) == end:
-            return path
+            time_taken = time.time() - start_time
+            space_used = sys.getsizeof(stack) + sys.getsizeof(visited) + sys.getsizeof(path)
+            return path, time_taken, space_used
         
         if (x, y) not in visited:
             visited.add((x, y))
             for nx, ny in get_neighbors((x, y), width, height):
                 if maze[ny][nx] == 0 and (nx, ny) not in visited:
-                    stack.append(((nx, ny), path + [(nx, ny)]))
-    
-    return None
+                    stack.append(((nx, ny), path + [(nx, ny)])) 
+    time_taken = time.time() - start_time
+    space_used = sys.getsizeof(stack) + sys.getsizeof(visited)
+    return None, time_taken, space_used
 
 def breadth_first_search(maze):
     height, width = len(maze), len(maze[0])
     start = (1, 0)  # Entrance coordinates
     end = (width - 2, height - 1)  # Exit coordinates
+    start_time = time.time()    
     
     queue = deque([(start, [start])])
     visited = set()
@@ -45,7 +51,9 @@ def breadth_first_search(maze):
         (x, y), path = queue.popleft()
         
         if (x, y) == end:
-            return path
+            time_taken = time.time() - start_time
+            space_used = sys.getsizeof(queue) + sys.getsizeof(visited) + sys.getsizeof(path)
+            return path, time_taken, space_used
         
         if (x, y) not in visited:
             visited.add((x, y))
@@ -54,7 +62,9 @@ def breadth_first_search(maze):
                 if maze[ny][nx] == 0 and (nx, ny) not in visited:
                     queue.append(((nx, ny), path + [(nx, ny)]))
     
-    return None  # No path found
+    time_taken = time.time() - start_time
+    space_used = sys.getsizeof(queue) + sys.getsizeof(visited)
+    return None, time_taken, space_used  # No path found
 
 def manhattan_distance(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -63,6 +73,7 @@ def a_star(maze):
     height, width = len(maze), len(maze[0])
     start = (1, 0)  # Entrance coordinates
     end = (width - 2, height - 1)  # Exit coordinates
+    start_time = time.time()    
     
     # Priority queue of (f_score, g_score, position, path)
     open_set = [(0, 0, start, [start])]
@@ -72,7 +83,9 @@ def a_star(maze):
         f_score, g_score, (x, y), path = heapq.heappop(open_set)
         
         if (x, y) == end:
-            return path
+            time_taken = time.time() - start_time
+            space_used = sys.getsizeof(open_set) + sys.getsizeof(closed_set) + sys.getsizeof(path)
+            return path, time_taken, space_used
         
         if (x, y) in closed_set:
             continue
@@ -85,7 +98,9 @@ def a_star(maze):
                 new_f_score = new_g_score + manhattan_distance((nx, ny), end)
                 heapq.heappush(open_set, (new_f_score, new_g_score, (nx, ny), path + [(nx, ny)]))
     
-    return None
+    time_taken = time.time() - start_time
+    space_used = sys.getsizeof(open_set) + sys.getsizeof(closed_set)
+    return None, time_taken, space_used
 
 def get_neighbors(cell, width, height):
     x, y = cell

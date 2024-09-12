@@ -14,6 +14,8 @@ const MazeVisualizer: React.FC = () => {
   const [solution, setSolution] = useState<Solution>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSolving, setIsSolving] = useState(false);
+  const [timeComplexity, setTimeComplexity] = useState<string>("");
+  const [spaceComplexity, setSpaceComplexity] = useState<string>("");
 
   const handleGenerateMaze = async (
     width: number,
@@ -23,8 +25,10 @@ const MazeVisualizer: React.FC = () => {
     setIsGenerating(true);
     try {
       const newMaze = await generateMaze(width, height, algorithm);
-      setMaze(newMaze);
+      setMaze(newMaze.maze);
       setSolution([]);
+      setTimeComplexity(newMaze.time_complexity);
+      setSpaceComplexity(newMaze.space_complexity);
     } catch (error) {
       console.error("Error generating maze:", error);
     }
@@ -35,7 +39,9 @@ const MazeVisualizer: React.FC = () => {
     setIsSolving(true);
     try {
       const newSolution = await solveMaze(maze, algorithm);
-      setSolution(newSolution);
+      setSolution(newSolution.maze);
+      setTimeComplexity(newSolution.time_complexity);
+      setSpaceComplexity(newSolution.space_complexity);
     } catch (error) {
       console.error("Error solving maze:", error);
     }
@@ -49,6 +55,8 @@ const MazeVisualizer: React.FC = () => {
         onSolveMaze={handleSolveMaze}
         isGenerating={isGenerating}
         isSolving={isSolving}
+        spaceComplexity={spaceComplexity}
+        timeComplexity={timeComplexity}
       />
       <MazeGrid maze={maze} solution={solution} />
     </div>

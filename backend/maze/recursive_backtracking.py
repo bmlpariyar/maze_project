@@ -1,39 +1,10 @@
-# import random
-# def recursive_backtracking(width, height):
-#     # Ensure the dimensions are odd to keep the maze enclosed by walls
-#     if width % 2 == 0: width += 1
-#     if height % 2 == 0: height += 1
-    
-#     # Initialize the maze with walls
-#     maze = [[1 for _ in range(width)] for _ in range(height)]
-    
-#     def carve_path(x, y):
-#         maze[y][x] = 0
-#         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-#         random.shuffle(directions)
-        
-#         for dx, dy in directions:
-#             nx, ny = x + dx * 2, y + dy * 2
-#             if 1 <= nx < width - 1 and 1 <= ny < height - 1 and maze[ny][nx] == 1:
-#                 maze[y + dy][x + dx] = 0
-#                 carve_path(nx, ny)
-    
-#     # Start carving from the cell (1, 1)
-#     carve_path(1, 1)
-    
-#     # Add entrance and exit
-#     maze[0][1] = 0  # Entrance
-#     maze[height - 1][width - 2] = 0  # Exit
-    
-#     return maze
+import random, time, sys
 
-
-import random
-
-def recursive_backtracking(width, height, dead_end_count=10):
+def recursive_backtracking(width, height, dead_end_count=15):
     width = width if width % 2 == 1 else width + 1
     height = height if height % 2 == 1 else height + 1
-    
+
+    start_time = time.time()
     # Initialize the maze with all walls
     maze = [[1 for _ in range(width)] for _ in range(height)]
     
@@ -84,5 +55,8 @@ def recursive_backtracking(width, height, dead_end_count=10):
                 maze[(y + ny) // 2][(x + nx) // 2] = 0
 
     add_dead_ends(dead_end_count)
+
+    generation_time = time.time() - start_time
+    maze_size = sys.getsizeof(maze)
     
-    return maze
+    return maze,generation_time,maze_size

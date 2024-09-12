@@ -2,6 +2,8 @@ export type MazeCell = 0 | 1; // 0 for path, 1 for wall
 export type Maze = MazeCell[][];
 export type Position = [number, number];
 export type Solution = Position[];
+export type timeComplexity = string;
+export type spaceComplexity = string;
 
 export type GenerationAlgorithm = "recursiveBacktracking" | "kruskal" | "prim";
 export type SolvingAlgorithm =

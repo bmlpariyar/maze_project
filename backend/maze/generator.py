@@ -9,11 +9,14 @@ sys.setrecursionlimit(10000)
 
 def generate_maze(width, height, algorithm):
     if algorithm == 'recursiveBacktracking':
-        return recursive_backtracking(width, height)
+        maze, time_taken, space_used = recursive_backtracking(width, height)
+        return maze, time_taken, space_used
     elif algorithm == 'kruskal':
-        return kruskals_algorithm(width, height)
+        maze, time_taken, space_used  = kruskals_algorithm(width, height)
+        return maze, time_taken, space_used
     elif algorithm == 'prim':
-        return prims_algorithm(width, height)
+        maze, time_taken, space_used = prims_algorithm(width, height)
+        return maze, time_taken, space_used
     else:
         raise ValueError(f"Unknown algorithm: {algorithm}")
 

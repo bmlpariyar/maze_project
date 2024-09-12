@@ -23,8 +23,8 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, solution }) => {
                     width: cellSize,
                     height: cellSize,
                     backgroundColor:
-                      cell === 1 ? "black" : isPath ? "#33db1d" : "white",
-                    border: "0.1px solid #ccc",
+                      cell === 1 ? "#373837" : isPath ? "#61ba56" : "white",
+                    border: "0.1px solid #e0e0e0",
                   }}
                 />
               );

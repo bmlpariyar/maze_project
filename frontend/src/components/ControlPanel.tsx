@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GenerationAlgorithm, SolvingAlgorithm } from "../types/maze";
+import AlgoVisualizer from "./AlgoVisualizer";
 
 interface ControlPanelProps {
   onGenerateMaze: (
@@ -10,6 +11,8 @@ interface ControlPanelProps {
   onSolveMaze: (algorithm: SolvingAlgorithm) => void;
   isGenerating: boolean;
   isSolving: boolean;
+  timeComplexity: string;
+  spaceComplexity: string;
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -17,6 +20,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onSolveMaze,
   isGenerating,
   isSolving,
+  timeComplexity,
+  spaceComplexity,
 }) => {
   const [width, setWidth] = useState(50);
   const [height, setHeight] = useState(30);
@@ -88,6 +93,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       <button onClick={handleSolve} disabled={isSolving}>
         {isSolving ? "Solving..." : "Solve Maze"}
       </button>
+      <AlgoVisualizer time={timeComplexity} space={spaceComplexity} />
     </div>
   );
 };

@@ -26,16 +26,24 @@ class SolveRequest(BaseModel):
 @app.post("/generate_maze")
 async def api_generate_maze(request: MazeRequest):
     try:
-        maze = generate_maze(request.width, request.height, request.algorithm)
-        return {"maze": maze}
+        maze, time_taken, space_used = generate_maze(request.width, request.height, request.algorithm)
+        return {
+            "maze": maze,
+            "time_complexity": f"{time_taken:.6f}",
+            "space_complexity": f"{space_used}"
+            }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/solve_maze")
 async def api_solve_maze(request: SolveRequest):
     try:
-        solution = solve_maze(request.maze, request.algorithm)
-        return {"solution": solution}
+        solution, time_complexity, space_complexity = solve_maze(request.maze, request.algorithm)
+        return {
+            "solution": solution,
+            "time_complexity": f"{time_complexity:.6f}",
+            "space_complexity": f"{space_complexity}"
+        }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
