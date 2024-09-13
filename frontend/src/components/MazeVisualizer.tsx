@@ -99,8 +99,10 @@ const MazeVisualizer: React.FC = () => {
         isAnimating={isAnimating}
         isSolutionReached={isSolutionReached}
       />
-      <div className="flex flex-col mt-10 items-center justify-center">
-        Step: {currentStep + 1} / {solvingSteps.length}
+      <div className="flex flex-col items-center justify-center">
+        <p className="block mb-2 text-xl font-extrabold text-gray-900">
+          Steps: {currentStep + 1} / {solvingSteps.length}
+        </p>
       </div>
       <MazeGrid
         maze={maze}

@@ -8,9 +8,13 @@ interface VisualizerProps {
 
 const AlgoVisualizer: React.FC<VisualizerProps> = ({ time, space }) => {
   return (
-    <div className="algo-visualizer">
-      <p className="">Time Complexity: {time} ms</p>
-      <p className="">Space Complexity: {space} bytes</p>
+    <div className="algo-visualizer mt-5">
+      <p className="block mb-2 text-sm font-medium text-gray-900">
+        Time Complexity: {time} ms
+      </p>
+      <p className="block mb-2 text-sm font-medium text-gray-900">
+        Space Complexity: {space} bytes
+      </p>
     </div>
   );
 };

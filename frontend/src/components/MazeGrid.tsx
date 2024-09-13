@@ -45,7 +45,7 @@ const MazeGrid: React.FC<MazeGridProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-center mt-10">
+    <div className="flex items-center justify-center mt-5 px-10 py-10">
       <div className="maze-grid" style={{ display: "inline-block" }}>
         {maze.map((row, y) => (
           <div key={y} style={{ display: "flex" }}>
