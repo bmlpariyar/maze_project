@@ -23,7 +23,7 @@ Make sure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/maze_visualizer.git
+   git clone https://github.com/bmlpariyar/maze_project.git
    cd maze_visualizer
 2. **Set up a virtual environment:**
    ```bash
